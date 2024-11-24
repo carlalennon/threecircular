@@ -8,29 +8,34 @@ function polarToCartesian(centerX, centerY, radius, angle) {
   return { x, y };
 }
 
-// Function to place stitches on the canvas
 function placeStitches(round, numStitches) {
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
-  const radius = (round + 1) * 30; // Space stitches by radius, increase as rounds expand
-  const angleStep = (2 * Math.PI) / numStitches; // Divide full circle by number of stitches
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = (round + 1) * 30; // Space stitches by radius, increase as rounds expand
+    const angleStep = (2 * Math.PI) / numStitches; // Divide full circle by number of stitches
   
-  for (let i = 0; i < numStitches; i++) {
-    const angle = i * angleStep;
-    const { x, y } = polarToCartesian(centerX, centerY, radius, angle);
-    
-    // Create a fabric Path (cross stitch)
-    const singleCrochet = new fabric.Path('M 50 0 L 50 100 M 0 50 L 100 50', {
-      left: x - 5,  // offset to center it at the right position
-      top: y - 5,   // offset to center it at the right position
-      stroke: 'black',
-      strokeWidth: 5,
-    });
-    
-    singleCrochet.scale(0.2); // Scale down the cross
-    canvas.add(singleCrochet);
+    for (let i = 0; i < numStitches; i++) {
+      const angle = i * angleStep;
+      const { x, y } = polarToCartesian(centerX, centerY, radius, angle);
+  
+      // Create a fabric Path (cross stitch)
+      const singleCrochet = new fabric.Path('M 50 0 L 50 100 M 0 50 L 100 50', {
+        left: x - 5,  // Center the cross at the calculated position
+        top: y - 5,
+        stroke: 'black',
+        strokeWidth: 5,
+      });
+  
+      singleCrochet.scale(0.2); // Scale down the cross
+  
+      // Rotate the cross to point toward the center
+      const rotationAngle = (angle * 180) / Math.PI + 90; // Convert to degrees and adjust
+      singleCrochet.rotate(rotationAngle);
+  
+      canvas.add(singleCrochet);
+    }
   }
-}
+  
 
 // Example of exporting the canvas as an image
 const exportButton = document.getElementById('exportButton');
