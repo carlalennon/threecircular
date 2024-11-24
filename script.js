@@ -8,7 +8,7 @@ function polarToCartesian(centerX, centerY, radius, angle) {
   return { x, y };
 }
 
-// Example function to place stitches on the canvas
+// Function to place stitches on the canvas
 function placeStitches(round, numStitches) {
   const centerX = canvas.width / 2;
   const centerY = canvas.height / 2;
@@ -19,24 +19,18 @@ function placeStitches(round, numStitches) {
     const angle = i * angleStep;
     const { x, y } = polarToCartesian(centerX, centerY, radius, angle);
     
-    // Create a fabric circle (or any object to represent the stitch)
-    const stitch = new fabric.Circle({
-      radius: 5,  // radius of the stitch circle
+    // Create a fabric Path (cross stitch)
+    const singleCrochet = new fabric.Path('M 50 0 L 50 100 M 0 50 L 100 50', {
       left: x - 5,  // offset to center it at the right position
       top: y - 5,   // offset to center it at the right position
-      fill: 'red',  // default stitch color
-      originX: 'center',
-      originY: 'center'
+      stroke: 'black',
+      strokeWidth: 5,
     });
     
-    canvas.add(stitch);
+    singleCrochet.scale(0.2); // Scale down the cross
+    canvas.add(singleCrochet);
   }
 }
-
-// Example: Place 6 stitches for round 1
-placeStitches(0, 6);  // Round 1 (center circle) has 6 stitches
-placeStitches(1, 12); // Round 2 has 12 stitches
-placeStitches(2, 18); // Round 3 has 18 stitches
 
 // Example of exporting the canvas as an image
 const exportButton = document.getElementById('exportButton');
@@ -48,44 +42,18 @@ exportButton.addEventListener('click', function() {
   link.click();
 });
 
-
-// Example function to place stitches
-function placeStitches(round, numStitches) {
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
-  const radius = (round + 1) * 30; // Space stitches by radius, increase as rounds expand
-  const angleStep = (2 * Math.PI) / numStitches; // Divide full circle by number of stitches
-  
-  for (let i = 0; i < numStitches; i++) {
-    const angle = i * angleStep;
-    const { x, y } = polarToCartesian(centerX, centerY, radius, angle);
-    
-    // Create a fabric circle (or any object to represent the stitch)
-    const stitch = new fabric.Circle({
-      radius: 5,  // radius of the stitch circle
-      left: x - 5,  // offset to center it at the right position
-      top: y - 5,   // offset to center it at the right position
-      fill: 'red',  // default stitch color
-      originX: 'center',
-      originY: 'center'
-    });
-    
-    canvas.add(stitch);
-  }
-}
-
+// Toggle interactivity on mouse click
 canvas.on('mouse:down', function(event) {
-    const activeObject = canvas.getActiveObject();  // Get the object that was clicked
-    if (activeObject && activeObject.type === 'circle') {
-      // Toggle color on click (just as an example of interactivity)
-      const newColor = activeObject.fill === 'red' ? 'blue' : 'red';
-      activeObject.set({ fill: newColor });
-      canvas.renderAll();  // Re-render the canvas to apply the changes
-    }
-  });
+  const activeObject = canvas.getActiveObject(); // Get the object that was clicked
+  if (activeObject && activeObject.type === 'path') {
+    // Toggle stroke color on click (just as an example of interactivity)
+    const newStroke = activeObject.stroke === 'black' ? 'blue' : 'black';
+    activeObject.set({ stroke: newStroke });
+    canvas.renderAll(); // Re-render the canvas to apply the changes
+  }
+});
 
-  
-// Example: Place 6 stitches for round 1
-placeStitches(0, 6);  // Round 1 (center circle) has 6 stitches
-placeStitches(1, 12); // Round 2 has 12 stitches
-placeStitches(2, 18); // Round 3 has 18 stitches
+// Example: Place stitches for 3 rounds
+placeStitches(0, 6);  // Round 1: 6 stitches
+placeStitches(1, 12); // Round 2: 12 stitches
+placeStitches(2, 18); // Round 3: 18 stitches
